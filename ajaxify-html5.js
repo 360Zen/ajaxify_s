@@ -1,6 +1,9 @@
 // Ajaxify
 // v1.0.1 - 30 September, 2012
 // https://github.com/browserstate/ajaxify
+// Modified for _s WordPress theme by Justin Maurer - January 26, 2016
+// https://github.com/AbacusPowers/ajaxify
+
 (function(window,undefined){
 	
 	// Prepare our Variables
@@ -19,12 +22,12 @@
 		// Prepare Variables
 		var
 			/* Application Specific Variables */
-			contentSelector = '#content,article:first,.article:first,.post:first',
+			contentSelector = '#content,article:first,.hentry:first,.post:first',
 			$content = $(contentSelector).filter(':first'),
 			contentNode = $content.get(0),
-			$menu = $('#menu,#nav,nav:first,.nav:first').filter(':first'),
-			activeClass = 'active selected current youarehere',
-			activeSelector = '.active,.selected,.current,.youarehere',
+			$menu = $('#site-navigation > div.menu').filter(':first'),
+			activeClass = 'current-menu-item current_page_parent',
+			activeSelector = '.current-menu-item, .current_page_parent',
 			menuChildrenSelector = '> li,> ul > li',
 			completedEventName = 'statechangecomplete',
 			/* Application Generic Variables */
@@ -49,9 +52,9 @@
 				url = $this.attr('href')||'',
 				isInternalLink;
 			
-			// Check link
-			isInternalLink = url.substring(0,rootUrl.length) === rootUrl || url.indexOf(':') === -1;
-			
+			// Check link for internal URL that's NOT a WordPress admin or login page
+			isInternalLink = (url.substring(0,rootUrl.length) === rootUrl || url.indexOf(':') === -1 ) && url.indexOf('wp-admin') === -1 && url.indexOf('wp-login') === -1;
+
 			// Ignore or Keep
 			return isInternalLink;
 		};
@@ -118,12 +121,19 @@
 			$.ajax({
 				url: url,
 				success: function(data, textStatus, jqXHR){
+
+
 					// Prepare
 					var
 						$data = $(documentHtml(data)),
 						$dataBody = $data.find('.document-body:first'),
 						$dataContent = $dataBody.find(contentSelector).filter(':first'),
-						$menuChildren, contentHtml, $scripts;
+						$menuChildren, contentHtml, $scripts,
+						//parser to get body classes. probably could replace the whole documentHtml function with this stuff
+						parser = new DOMParser(),
+						doc = parser.parseFromString(data, "text/html"),
+						// muy importante para la CSS
+						$bodyClasses = $(doc).find('body').attr('class');
 					
 					// Fetch the scripts
 					$scripts = $dataContent.find('.document-script');
@@ -137,12 +147,16 @@
 						document.location.href = url;
 						return false;
 					}
-					
+
 					// Update the menu
 					$menuChildren = $menu.find(menuChildrenSelector);
 					$menuChildren.filter(activeSelector).removeClass(activeClass);
 					$menuChildren = $menuChildren.has('a[href^="'+relativeUrl+'"],a[href^="/'+relativeUrl+'"],a[href^="'+url+'"]');
+
 					if ( $menuChildren.length === 1 ) { $menuChildren.addClass(activeClass); }
+
+					//Update the body classes
+					$('body').attr('class',$bodyClasses);
 
 					// Update the content
 					$content.stop(true,true);
@@ -154,7 +168,8 @@
 						document.getElementsByTagName('title')[0].innerHTML = document.title.replace('<','&lt;').replace('>','&gt;').replace(' & ',' &amp; ');
 					}
 					catch ( Exception ) { }
-					
+
+
 					// Add the scripts
 					$scripts.each(function(){
 						var $script = $(this), scriptText = $script.text(), scriptNode = document.createElement('script');
