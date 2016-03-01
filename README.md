@@ -1,4 +1,4 @@
-# Ajaxify
+# Ajaxify_s
 This is a modified version of the original [Ajaxify plugin](https://github.com/browserstate/ajaxify) that is customized to work for the default code structure of the [_s (Underscores)](http://underscores.me/) WordPress theme. It is assumed that you are using the _s theme and have not modified the basic structure, classes or IDs provided in the theme. 
 
 ## Installation
