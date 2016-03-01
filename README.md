@@ -11,7 +11,7 @@ In order for this to work, you’ll need to use wp_enqueue_script() to include t
     
 Above, you’ll find the lines to include, if you want to load these libraries remotely. I would recommend, however, that you actually take the time to download them, and use a filepath specific to your theme. You can use something like
 
-wp_enqueue_script( 'ajaxify', get_template_directory_uri() . '/js/vendor/ajaxify_s/ajaxify-html5.js', array( 'jquery' ), '', true );
+    wp_enqueue_script( 'ajaxify', get_template_directory_uri() . '/js/vendor/ajaxify_s/ajaxify-html5.js', array( 'jquery' ), '', true );
 instead of the direct link to the library on GitHub.
 
 
