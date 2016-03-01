@@ -2,7 +2,7 @@
 // v1.0.1 - 30 September, 2012
 // https://github.com/browserstate/ajaxify
 // Modified for _s WordPress theme by Justin Maurer - January 26, 2016
-// https://github.com/AbacusPowers/ajaxify
+// https://github.com/AbacusPowers/ajaxify_s
 
 (function(window,undefined){
 	
